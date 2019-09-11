@@ -24,8 +24,28 @@ let MustSeeLocations = [
 
 ]
 
+const {Datastore} = require('@google-cloud/datastore');
+const datastore = new Datastore();
+
+const getMustLocations = () => {
+    const query = datastore
+      .createQuery('Locations')
+      .filter('mustSee', true)
+     
+    return datastore.runQuery(query);
+  };
+  
+
 module.exports = {
-    read: (req, res) => res.send(MustSeeLocations),
+    read: (req, res) => { 
+        const locations =  getMustLocations().then((data) => {
+        
+        console.log(data)
+        res.send(data)
+        });
+        
+    },
+
     create: (req, res) => {
         let newLocation = req.body
         newLocation.id = id++

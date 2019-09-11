@@ -1,3 +1,4 @@
+
 let id=  1
 let MightSeeLocations =[
 {
@@ -12,7 +13,7 @@ let MightSeeLocations =[
     country: 'Japan',
     state_provence: '',
     city: 'Tokyo',
-    imageUrl:'https://www.kevinandamanda.com/whatsnew/wp-content/uploads/2018/02/best-things-to-do-tokyo-japan-01.jpg'
+    imageUrl:'https://d36tnp772eyphs.cloudfront.net/blogs/1/2011/05/japan-1200x729.jpg'
 },
 {
     id: id++,
@@ -23,8 +24,36 @@ let MightSeeLocations =[
 },
 ]
 
+const {Datastore} = require('@google-cloud/datastore');
+const datastore = new Datastore();
+
+const getMightLocations = () => {
+    const query = datastore
+      .createQuery('Locations')
+      .filter('mightSee', true)
+     
+    return datastore.runQuery(query);
+  };
+
+
 module.exports = {
-    read: (req, res) => res.send(MightSeeLocations),
+    // read: (req, res) => { 
+    //     const locations = MightSeeLocations;
+    //     res.send(locations)
+
+
+    // },
+    read: (req, res) => { 
+        console.log('this is before the const locations')
+        const locations =  getMightLocations().then((data) => {
+            
+            console.log('this is after the const')
+            console.log(data)
+
+            res.send(data)
+        });
+        
+    },
     create: (req, res) => {
         let newLocation = req.body
         newLocation.id = id++
@@ -34,7 +63,6 @@ module.exports = {
     },
     delete: (req, res) => {
         let { id } = req.params
-        
         let index = MightSeeLocations.findIndex(location => +location.id === +id)
         MightSeeLocations.splice(index, 1)
         res.send(MightSeeLocations)
@@ -52,3 +80,4 @@ module.exports = {
 
     
 }
+

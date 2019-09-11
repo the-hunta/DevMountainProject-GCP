@@ -29,7 +29,7 @@ export default class Dash extends Component {
     getMightSee() {
         axios.get('/api/MightSeeLocations').then((res) => {
             this.setState({
-                MightSeeLocations: res.data
+                MightSeeLocations: res.data[0]
             })
         }).catch(err => console.log('Can\'t get Location', err))
     }
@@ -37,7 +37,7 @@ export default class Dash extends Component {
     getMustSee() {
         axios.get('/api/MustSeeLocations').then((res) => {
             this.setState({
-                MustSeeLocations: res.data
+                MustSeeLocations: res.data[0]
             })
         }).catch(err => console.log('Cannot get Location', err))
 
