@@ -27,6 +27,47 @@ let MustSeeLocations = [
 const {Datastore} = require('@google-cloud/datastore');
 const datastore = new Datastore();
 
+
+// Translates from the application's format to the datastore's
+// extended entity property format. It also handles marking any
+// specified properties as non-indexed. Does not translate the key.
+//
+// Application format:
+//   {
+//     id: id,
+//     property: value,
+//     unindexedProperty: value
+//   }
+//
+// Datastore extended format:
+//   [
+//     {
+//       name: property,
+//       value: value
+//     },
+//     {
+//       name: unindexedProperty,
+//       value: value,
+//       excludeFromIndexes: true
+//     }
+//   ]
+function toDatastore(obj, nonIndexed) {
+    nonIndexed = nonIndexed || [];
+    const results = [];
+    Object.keys(obj).forEach(k => {
+      if (obj[k] === undefined) {
+        return;
+      }
+      results.push({
+        name: k,
+        value: obj[k],
+        excludeFromIndexes: nonIndexed.indexOf(k) !== -1,
+      });
+    });
+    return results;
+  }
+  
+
 const getMustLocations = () => {
     const query = datastore
       .createQuery('Locations')
@@ -37,22 +78,48 @@ const getMustLocations = () => {
   
 
 module.exports = {
+
+    //WORKING
     read: (req, res) => { 
         const locations =  getMustLocations().then((data) => {
         
         console.log(data)
         res.send(data)
         });
-        
     },
+
+
 
     create: (req, res) => {
-        let newLocation = req.body
-        newLocation.id = id++
-        MustSeeLocations.push(newLocation)
+        const ds = datastore
+        let data = req.body
+        data.mightSee= false
 
-        res.status(200).send(MustSeeLocations)
+        console.log(data)
+
+        const kind = 'Locations';
+        key = ds.key(kind);
+
+        const entity =  {
+            key: key,
+            data: toDatastore(data),
+  
+          };
+          
+          ds.save(entity, err => {
+              data.id = entity.key.id; 
+          if (!err) {
+               res.status(200).send(data) 
+               console.log(data)
+               return 
+      
+          }
+         
+          res.status(500).send(err) 
+            });
+             
     },
+
     delete: (req, res) => {
         let { id } = req.params
         let index = MustSeeLocations.findIndex(location => +location.id === +id)
