@@ -29,7 +29,7 @@ export default class Dash extends Component {
     getMightSee() {
         axios.get('/api/MightSeeLocations').then((res) => {
             this.setState({
-                MightSeeLocations: res.data[0]
+                MightSeeLocations: res.data
             })
         }).catch(err => console.log('Can\'t get Location', err))
     }
@@ -37,7 +37,7 @@ export default class Dash extends Component {
     getMustSee() {
         axios.get('/api/MustSeeLocations').then((res) => {
             this.setState({
-                MustSeeLocations: res.data[0]
+                MustSeeLocations: res.data
             })
         }).catch(err => console.log('Cannot get Location', err))
 
@@ -48,9 +48,10 @@ export default class Dash extends Component {
     createLocationMight = newLocation => {
         axios.post('/api/MightSeeLocations', newLocation).then(res => {
             console.log(res.data)
-            this.setState({
-                MightSeeLocations: res.data
-            })
+            this.getMightSee()
+            // this.setState({
+            //     MightSeeLocations: res.data
+            // })
         }).catch(err => console.log(err))
 
     }
@@ -58,7 +59,7 @@ export default class Dash extends Component {
     updateLocationMight = (id, updatedLocation) => {
         console.log(updatedLocation, id)
         axios.put(`/api/MightSeeLocations/${id}`, updatedLocation)
-            .then(res => this.setState({ MightSeeLocations: res.data }))
+            .then(res => this.getMightSee())
             .catch(err => console.log(err))
     
     }
@@ -66,10 +67,9 @@ export default class Dash extends Component {
     deleteLocationMight = id => {
         console.log(id)
         axios.delete(`/api/MightSeeLocations/${id}`)
-            .then(res =>{console.log(res.data); this.setState({ MightSeeLocations: res.data })})
+            .then(res =>{console.log(res.data); this.getMightSee()})
             .catch(err => console.log(err))
     }
-
 
     //MUST LIST
 
@@ -77,9 +77,8 @@ export default class Dash extends Component {
         console.log(newLocation)
         axios.post('/api/MustSeeLocations', newLocation).then(res => {
             console.log(res.data)
-            this.setState({
-                MustSeeLocations: res.data
-            })
+            this.getMustSee()
+           
         }).catch(err => console.log(err))
 
     }
@@ -87,14 +86,14 @@ export default class Dash extends Component {
     updateLocationMust = (id, updatedLocation) => {
         console.log(updatedLocation, id)
         axios.put(`/api/MustSeeLocations/${id}`, updatedLocation)
-            .then(res => this.setState({ MustSeeLocations: res.data }))
+            .then(res => this.getMustSee())
             .catch(err => console.log(err))
     }
 
     deleteLocationMust = id => {
         console.log(id)
         axios.delete(`/api/MustSeeLocations/${id}`)
-            .then(res => {console.log(res.data); this.setState({ MustSeeLocations: res.data })})
+            .then(res => {console.log(res.data); this.getMustSee()})
             .catch(err => console.log(err))
     }
 

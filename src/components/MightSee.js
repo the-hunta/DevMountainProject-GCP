@@ -28,7 +28,7 @@ export default class MightSee extends Component {
             <div className='Mightsee'>
                 <img src={location.imageUrl} alt="" width="350px" height="250px"/>
                 {this.state.edit ? 
-                <EditLocation id={location.id} mightSee={this.state.mightSee} updateLocationMight={this.props.updateLocationMight}  toggleEdit={this.toggleEdit}/>
+                <EditLocation id={location.id} location={location} mightSee={this.state.mightSee} updateLocationMight={this.props.updateLocationMight}  toggleEdit={this.toggleEdit}/>
                 :
                  <div>
                     <p>Country: {location.country}</p>

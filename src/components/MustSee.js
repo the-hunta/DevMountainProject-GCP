@@ -24,12 +24,13 @@ export default class MustSee extends Component {
             <div className='MustSee'> 
                 <img src={location.imageUrl} alt="" width="350px" height="250px"/>
                 {this.state.edit ? 
-                <EditLocation id={location.id} updateLocationMust={this.props.updateLocationMust} toggleEdit={this.toggleEdit}/>
+                <EditLocation id={location.id} location={location} updateLocationMust={this.props.updateLocationMust} toggleEdit={this.toggleEdit}/>
                 :
                  <div>
                     <p>Country: {location.country}</p>
                     <p>State or Provence: {location.state_provence}</p>
                     <p>City: {location.city}</p>
+
                 </div>
                 }
                 {this.state.edit ?

@@ -28,29 +28,6 @@ const {Datastore} = require('@google-cloud/datastore');
 const datastore = new Datastore();
 
 
-// Translates from the application's format to the datastore's
-// extended entity property format. It also handles marking any
-// specified properties as non-indexed. Does not translate the key.
-//
-// Application format:
-//   {
-//     id: id,
-//     property: value,
-//     unindexedProperty: value
-//   }
-//
-// Datastore extended format:
-//   [
-//     {
-//       name: property,
-//       value: value
-//     },
-//     {
-//       name: unindexedProperty,
-//       value: value,
-//       excludeFromIndexes: true
-//     }
-//   ]
 function toDatastore(obj, nonIndexed) {
     nonIndexed = nonIndexed || [];
     const results = [];
@@ -67,50 +44,43 @@ function toDatastore(obj, nonIndexed) {
     return results;
   }
   
+  function fromDatastore(obj) {
+    obj.id = obj[Datastore.KEY].id;
+    return obj;
+}
 
-const getMightLocations = () => {
+const getMightLocations = (cb) => {
     const query = datastore
       .createQuery('Locations')
-      .filter('mightSee', true)
+      .filter('mustSee', false)
+      // .order('country')
      
-    return datastore.runQuery(query);
+      return datastore.runQuery(query, (err, entites) => {
+        entites.map(fromDatastore)
+        cb(entites)
+    })
   };
-
-// const createMightLocation = (data, res) => {
-//       const ds = datastore
-     
-    
-//   }
-
 
 
 
 module.exports = {
 
-    //WORKING
-    read: (req, res) => { 
-        const locations =  getMightLocations().then((data) => {
-            
-            console.log('this is after the const')
-            console.log(data)
-
-            res.send(data)
+  read: (req, res) => {
+      const locations =  getMightLocations((data) => {
+       res.send(data)
         });
-        
     },
 
-    
-    create: (req, res) => {
+  create: (req, res) => {
         const ds = datastore
         let data = req.body
-        data.mightSee= true
-
+        data.mightSee = true
+ 
         console.log(data)
 
         const kind = 'Locations';
         key = ds.key(kind);
   
-
         const entity =  {
           key: key,
           data: toDatastore(data),
@@ -119,7 +89,6 @@ module.exports = {
         
         ds.save(entity, err => {
             data.id = entity.key.id; 
-            console.log('testing the save')
         if (!err) {
              res.status(200).send(data) 
              console.log(data)
@@ -133,22 +102,46 @@ module.exports = {
            
     },
 
+
     delete: (req, res) => {
         let { id } = req.params
-        let index = getMightLocations.findIndex(location => +location.id === +id)
-        getMightLocations.splice(index, 1)
-        res.send(getMightLocations)
+        const key = datastore.key(["Locations", parseInt(id, 10)]);
+        datastore.delete(key, (err) => {
+          if (!err) {
+            res.status(200).json('success')
+
+            console.log()
+            return;
+          }
+          res.status(500).send(err)
+        });
     },
+
+
     update: (req, res) => {
         let {id} = req.params
-        let updateLocation = req.body
-        updateLocation.id = id
+        let data = req.body
+        
+        const key = datastore.key(["Locations", parseInt(id, 10)]);
+        const entity =  {
+            key: key,
+            data: toDatastore(data),
+  
+          };
+          
+          datastore.save(entity, err => {
+              data.id = entity.key.id; 
+          if (!err) {
+              
+            res.status(200).send(data)
 
-        let index = getMightLocations.findIndex(location => +location.id === +id)
+            console.log()
+            return;
+          }
+          res.status(500).send(err)
+        });
+      }
+   
+  }
 
-        getMightLocations.splice(index, 1, updateLocation)
-        res.send(getMightLocations)
-    }
-    
-}
 

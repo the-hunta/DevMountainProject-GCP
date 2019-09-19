@@ -3,13 +3,16 @@ import React, { Component } from 'react'
 export default class EditLocation extends Component {
     constructor(props) {
         super(props)
+        const {location} = this.props
 
         this.state = {
-            switch: false,
-            country: '',
-            state_provence: '',
-            city: '',
-            imageUrl: ''
+
+            mustSee: location.mustSee,
+            mightSee: location.mightSee,
+            country:  location.country,
+            state_provence: location.state_provence,
+            city: location.city,
+            imageUrl: location.imageUrl
 
         }
     }
@@ -24,18 +27,11 @@ export default class EditLocation extends Component {
 
     handleClick = () => {
         const { id } = this.props
-        const { country, state_provence, city, imageUrl } = this.state
-        let updatedLocation = {
-            country,
-            state_provence,
-            city,
-            imageUrl,
-        }
         
         if(this.props.mightSee) {
-        this.props.updateLocationMight(id, updatedLocation)
+        this.props.updateLocationMight(id, this.state)
         }else{
-        this.props.updateLocationMust(id, updatedLocation)
+        this.props.updateLocationMust(id, this.state)
         }
         this.props.toggleEdit()
     }
