@@ -53,7 +53,6 @@ const getMustLocations = (cb) => {
     const query = datastore
       .createQuery('Locations')
       .filter('mustSee', true)
-    //   .order('country')
      
      return datastore.runQuery(query, (err, entites) => {
         entites.map(fromDatastore)
@@ -63,7 +62,6 @@ const getMustLocations = (cb) => {
   
 
 module.exports = {
-
 
     read: (req, res) => { 
         const locations =  getMustLocations((data) => {
@@ -76,8 +74,6 @@ module.exports = {
         const ds = datastore
         let data = req.body
         data.mightSee= false
-
-        console.log(data)
 
         const kind = 'Locations';
         key = ds.key(kind);
@@ -92,7 +88,6 @@ module.exports = {
               data.id = entity.key.id; 
           if (!err) {
                res.status(200).send(data) 
-               console.log(data)
                return 
       
           }
@@ -110,7 +105,6 @@ module.exports = {
         datastore.delete(key, (err) => {
           if (!err) {
             res.status(200).json('success')
-            console.log()
             return;
           }
           res.status(500).send(err)
@@ -134,8 +128,6 @@ module.exports = {
           if (!err) {
               
             res.status(200).send(data)
-
-            console.log()
             return;
           }
           res.status(500).send(err)

@@ -13,7 +13,8 @@
     "react-scripts": "3.0.1"
   },
   "scripts": {
-    "start": "npm run build; PORT=5050 node index.js",
+    "start": "node index.js",
+    "build-start": "npm run build; PORT=5050 node index.js",
     "debug": "npm run build; PORT=5050 node inspect index.js",
     "build": "react-scripts build",
     "test": "react-scripts test",

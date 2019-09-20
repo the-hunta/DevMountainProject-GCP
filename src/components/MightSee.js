@@ -24,9 +24,13 @@ export default class MightSee extends Component {
 
     render() {
         let { location } = this.props 
+        let imageUrl = 'https://png.pngtree.com/png-vector/20190120/ourlarge/pngtree-gallery-vector-icon-png-image_470660.jpg'
+        if (location.imageUrl) {
+            imageUrl = location.imageUrl 
+        }
         return(
             <div className='Mightsee'>
-                <img src={location.imageUrl} alt="" width="350px" height="250px"/>
+                <img src={imageUrl} alt="Location Image" width="350px" height="250px"/>
                 {this.state.edit ? 
                 <EditLocation id={location.id} location={location} mightSee={this.state.mightSee} updateLocationMight={this.props.updateLocationMight}  toggleEdit={this.toggleEdit}/>
                 :
