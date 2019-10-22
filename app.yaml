@@ -1,3 +1,5 @@
 # [START my-first-project-250619]
 runtime: nodejs10
+entrypoint: NODE_ENV=production node index.js
 # [END my-first-project-250619l]
+
