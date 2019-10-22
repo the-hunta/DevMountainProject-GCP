@@ -12,63 +12,85 @@ export default class EditLocation extends Component {
             country:  location.country,
             state_provence: location.state_provence,
             city: location.city,
-            imageUrl: location.imageUrl
+            imageUrl: location.imageUrl,
+            showError: false,
 
         }
+    }
+
+
+    isValid = () => {
+        let location = this.state
+        return !(location.city === "" || location.country === "" || location.state_provence === "" || location.imageUrl === "")
     }
 
     handleChange = e => {
-        let { name, value } = e.target
-        this.setState({
-            [name]: value
-        })
+        let { value, name } = e.target
 
+        this.setState({
+            [name]: value,
+            showError: false,
+        })
     }
+
 
     handleClick = () => {
         const { id } = this.props
-        
-        if(this.props.mightSee) {
-        this.props.updateLocationMight(id, this.state)
-        }else{
-        this.props.updateLocationMust(id, this.state)
-        }
+
+        if (!this.isValid()) {
+            this.setState({
+                showError: true
+            }) 
+
+            alert ("Please fill required fields") 
+            return false;
+        }  
+     
+        this.props.updateLocation(id, this.state)
+    
         this.props.toggleEdit()
     }
 
-    
-
-
-
 
     render() { 
-        console.log(this.props)
-        return (
+        let errorMessage = ""
+        if (!this.isValid() && this.state.showError) {
+            errorMessage = <div>Please enter a value for all fields</div>;
+        }
+        return ( 
+
             <div className='div'>
+
+                {errorMessage}
+
                 <input
                     type="text"
                     name="country"
                     value={this.state.country}
                     placeholder="Country"
-                    onChange={this.handleChange} />
+                    onChange={this.handleChange} 
+                    required/>
                 <input
                     type="text"
                     name="state_provence"
                     value={this.state.state_provence}
                     placeholder="State_provence"
-                    onChange={this.handleChange} />
+                    onChange={this.handleChange} 
+                    required/>
                 <input
                     type="text"
                     name="city"
                     value={this.state.city}
                     placeholder="City"
-                    onChange={this.handleChange} />
+                    onChange={this.handleChange} 
+                    required/>
                 <input
                     type="imgUrl"
                     name="imageUrl"
                     value={this.state.imageUrl}
                     placeholder="imageUrl"
-                    onChange={this.handleChange} />
+                    onChange={this.handleChange}
+                    required />
                 <button onClick={this.handleClick}>update location </button>
 
             </div>

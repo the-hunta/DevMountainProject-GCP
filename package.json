@@ -3,17 +3,17 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@google-cloud/datastore": "^4.0.0",
-    "axios": "^0.18.0",
+    "@google-cloud/datastore": "^4.4.0",
+    "axios": "^0.18.1",
     "datastore": "^1.8.2",
     "express": "^4.17.1",
     "nodemon": "1.19.1",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
+    "react": "^16.10.2",
+    "react-dom": "^16.10.2",
     "react-scripts": "3.0.1"
   },
   "scripts": {
-    "start": "node index.js",
+    "start": "react-scripts start",
     "build-start": "npm run build; PORT=5050 node index.js",
     "debug": "npm run build; PORT=5050 node inspect index.js",
     "build": "react-scripts build",

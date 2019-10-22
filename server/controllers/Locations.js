@@ -1,29 +1,3 @@
-
-let id=  1
-let MightSeeLocations =[
-{
-    id: id++,
-    country: 'United States',
-    state_provence: 'Washinton',
-    city: 'Seattle',
-    imageUrl: 'https://s3.amazonaws.com/fjwp/blog/wp-content/uploads/2015/10/11-Great-Flexible-Jobs-in-Seattle-Washington-Hiring-Now.jpg'
-},
-{
-    id: id++,
-    country: 'Japan',
-    state_provence: '',
-    city: 'Tokyo',
-    imageUrl:'https://d36tnp772eyphs.cloudfront.net/blogs/1/2011/05/japan-1200x729.jpg'
-},
-{
-    id: id++,
-    country: 'Canada',
-    state_provence: 'Nova Scotia',
-    city: 'Halifax',
-    imageUrl:'https://www.g4s.com/en-ca/-/media/g4s/canada/images/modules/header/herowide/1200x420_halifax.ashx'
-},
-]
-
 const {Datastore} = require('@google-cloud/datastore');
 const datastore = new Datastore();
 
@@ -43,60 +17,67 @@ function toDatastore(obj, nonIndexed) {
     });
     return results;
   }
-  
-  function fromDatastore(obj) {
-    obj.id = obj[Datastore.KEY].id;
+
+function fromDatastore(obj) {
+    obj.id = obj[datastore.KEY].id;
     return obj;
 }
-
-const getMightLocations = (cb) => {
+  
+const getLocations = (cb) => {
     const query = datastore
       .createQuery('Locations')
-      .filter('mustSee', false)
-     
-      return datastore.runQuery(query, (err, entites) => {
+    
+
+
+     return datastore.runQuery(query, (err, entites) => {
         entites.map(fromDatastore)
         cb(entites)
     })
-  };
-
-
+  }
 
 module.exports = {
 
-  read: (req, res) => {
-      const locations =  getMightLocations((data) => {
-       res.send(data)
+    //vvvvvvvvvvvvvvvvvvvvvv getting all from data store
+
+    read: (req, res) => { 
+         getLocations((data) => {
+            res.send(data)
         });
     },
 
-  create: (req, res) => {
+
+    //vvvvvvvvvvvvvvvvvvvvvv create for must/ might
+
+
+    create: (req, res) => {
         const ds = datastore
         let data = req.body
-        data.mightSee = true
 
         const kind = 'Locations';
         key = ds.key(kind);
-  
+
         const entity =  {
-          key: key,
-          data: toDatastore(data),
+            key: key,
+            data: toDatastore(data),
+  
         };
-        
-        ds.save(entity, err => {
-            data.id = entity.key.id; 
-        if (!err) {
-             res.status(200).send(data) 
-             return 
-    
-        }
-       
-        res.status(500).send(err) 
-    
-          });
-           
+          
+          ds.save(entity, err => {
+              data.id = entity.key.id; 
+          if (!err) {
+               res.status(200).send(data) 
+               return 
+      
+          }
+         
+          res.status(500).send(err) 
+
+         });
+             
     },
 
+
+    //vvvvvvvvvvvvvvvvvvvvvvvvvvv delete for must/ might (don't seprate code)
 
     delete: (req, res) => {
         let { id } = req.params
@@ -110,11 +91,14 @@ module.exports = {
         });
     },
 
+   
+    //vvvvvvvvvvvvvvvvvvvvvvvvvvvvvv update for must/ might (don't seprate code) 
+
 
     update: (req, res) => {
         let {id} = req.params
         let data = req.body
-        
+
         const key = datastore.key(["Locations", parseInt(id, 10)]);
         const entity =  {
             key: key,
@@ -131,8 +115,6 @@ module.exports = {
           }
           res.status(500).send(err)
         });
-      }
-   
-  }
+    }
 
-
+}
