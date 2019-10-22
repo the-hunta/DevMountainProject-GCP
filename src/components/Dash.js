@@ -3,12 +3,7 @@ import axios from 'axios'
 import './Dash.css'
 
 import LocationsMapped from './LocationsMapped'
-import MustSee from './MustSee'
-import MightSee from './MightSee'
 import CreateLocation from './CreateLocation';
-
-// import EditLocation from './EditLocation'
-// import CreateLocation from './CreateLocation'
 
 export default class Dash extends Component {
     constructor() {
@@ -63,7 +58,7 @@ export default class Dash extends Component {
             <div  className='DashCont' >
 
                 <div className='mustSeeCont'> 
-                    <CreateLocation createLocation={this.createLocation} createLocation={this.createLocation} />
+                    <CreateLocation createLocation={this.createLocation} />
                 
                     <h1 className='header_must'>Might See</h1>
                     {this.state.locations.filter(location => location.mightSee).map(location => {

@@ -9,16 +9,12 @@ export default class MightSee extends Component {
 
     this.state = {
         edit: false,
-        // mightSee: false,
-
         }
     }
 
     toggleEdit = () => {
         this.setState({
             edit: !this.state.edit,
-            // mightSee: true,
-
         })
     }
 
@@ -33,9 +29,6 @@ export default class MightSee extends Component {
                 <img src={imageUrl} alt="Location Image" width="350px" height="250px"/>
                 {this.state.edit ? 
                 <EditLocation id={location.id} location={location}  updateLocation={this.props.updateLocation}  toggleEdit={this.toggleEdit}/>
-
-                // mightSee={this.state.mightSee}
-
                 :
 
                  <div>

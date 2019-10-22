@@ -16,7 +16,6 @@ export default class CreateLocation extends Component {
             imageUrl: "",
             showError: false,
 
-
         }
     }
 
@@ -102,7 +101,8 @@ export default class CreateLocation extends Component {
                     value={this.state.state_provence}
                     placeholder="State or Provence"
                     onChange={this.handleChange}
-                    required/>
+                    required
+                         />
 
                 <input className='input'
                    type="text"
@@ -119,7 +119,7 @@ export default class CreateLocation extends Component {
                     placeholder="imageUrl"
                     onChange={this.handleChange}
                     required
-                    />
+                         />
 
                 <input type='checkbox' className='input'
                     onChange={this.handleToggle} defaultChecked={false} checked={this.state.mustSee} />
